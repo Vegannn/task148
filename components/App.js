@@ -26,7 +26,7 @@ App = React.createClass({
         xhr.open('GET', url);
         xhr.onload = function() {
             if (xhr.status === 200) {
-               var data = JSON.parse(xhr.responseText).data; // 4.
+                var data = JSON.parse(xhr.responseText).data; // 4.
                 var gif = {  // 5.
                     url: data.fixed_width_downsampled_url,
                     sourceUrl: data.url
@@ -37,6 +37,31 @@ App = React.createClass({
         xhr.send();
     },
     
+    getGif2: function(searchingText,callback){
+        return new Promise(
+            function (resolve, reject) {
+                var url = CONFIG.GIPHY_API_URL + '/v1/gifs/random?api_key=' + CONFIG.GIPHY_PUB_KEY + '&tag=' + searchingText;  // 2.
+                var xhr = new XMLHttpRequest();  // 3.
+
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        resolve(
+                            var data = JSON.parse(xhr.responseText).data; // 4.
+                            var gif = {  // 5.
+                                url: data.fixed_width_downsampled_url,
+                                sourceUrl: data.url
+                            };
+                            callback(gif);  // 6.
+                        ); // Sukces
+                    } else {
+                        reject(new Error(this.statusText)); // Dostaliśmy odpowiedź, ale jest to np 404
+                    }
+                };
+                xhr.open('GET', url);
+                xhr.send();
+            });
+    },
+
     render: function() {
 
         var styles = {
