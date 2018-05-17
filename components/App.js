@@ -11,13 +11,15 @@ App = React.createClass({
         this.setState({
             loading: true  // 2.
         });
-        this.getGif(searchingText, function(gif) {  // 3.
-            this.setState({  // 4
-                loading: false,  // a
-                gif: gif,  // b
-                searchingText: searchingText  // c
+        getGif2(searchingText)
+        .then(result => {
+            this.setState({
+                loading: false,
+                gif: gif,
+                searchingText: searchingText
             });
-        }.bind(this));
+        }.bind(this);)
+        .catch(error => console.log(error));
     },
 
     getGif: function(searchingText, callback) {  // 1.
@@ -37,7 +39,7 @@ App = React.createClass({
         xhr.send();
     },
     
-    getGif2: function(searchingText,callback){
+    getGif2: function(searchingText){
         return new Promise(
             function (resolve, reject) {
                 var url = CONFIG.GIPHY_API_URL + '/v1/gifs/random?api_key=' + CONFIG.GIPHY_PUB_KEY + '&tag=' + searchingText;  // 2.
@@ -51,7 +53,7 @@ App = React.createClass({
                                 url: data.fixed_width_downsampled_url,
                                 sourceUrl: data.url
                             };
-                            callback(gif);  // 6.
+                            resolve(gif);  // 6.
                         ); // Sukces
                     } else {
                         reject(new Error(this.statusText)); // Dostaliśmy odpowiedź, ale jest to np 404
